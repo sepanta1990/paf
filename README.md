@@ -12,4 +12,8 @@ the application.
 
 ### Running the application
 
-mvn spring-boot:run and go to a browser at [http://localhost:8080](http://localhost:8080). 
+Linux:
+`./mvnw spring-boot:run` and go to a browser at [http://localhost:8080](http://localhost:8080).
+
+Windows:
+`./mvnw.cmd spring-boot:run` and go to a browser at [http://localhost:8080](http://localhost:8080).
