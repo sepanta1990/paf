@@ -5,10 +5,13 @@ SQL database, RESTful web services and AngularJS frontend.
 
 ### Task
 
-Application is to be deployed into production, but in final code 
-review step doubts were raised about the quality of the
-application. Your task is to identify and fix biggest flaws in 
-the application.
+Application is to be deployed into production, but in final code review step
+serious doubts were raised about the quality of the application. The reviewers
+recommendation was a full application rewrite. Your task is to identify and fix
+all flaws in the code-package, ensuring that the resulting application is ready
+to be put into production.
+
+Rewrite and improve all parts of the code package.
 
 ### Running the application
 
