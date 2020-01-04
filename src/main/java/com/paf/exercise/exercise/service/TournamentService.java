@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Mohammad Fathizadeh 2020-01-04
@@ -26,6 +27,10 @@ public class TournamentService {
 
     public List<Tournament> getTournaments() {
         return tournamentRepository.findAll();
+    }
+
+    public Optional<Tournament> getTournamentById(Integer id) {
+        return Optional.ofNullable(tournamentRepository.findOne(id));
     }
 
 }
