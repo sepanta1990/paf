@@ -11,9 +11,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Optional;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
 /**
@@ -38,5 +38,16 @@ public class TournamentServiceTest {
         when(tournamentRepository.findAll()).thenReturn(Collections.singletonList(tournament));
         assertArrayEquals(Collections.singletonList(tournament).toArray(), tournamentService.getTournaments().toArray());
 
+    }
+
+    @Test
+    public void getTournamentByIdTest() {
+        Tournament tournament = new Tournament(1, 5, null);
+
+        when(tournamentRepository.findOne(1)).thenReturn(tournament);
+        assertEquals(Optional.of(tournament), tournamentService.getTournamentById(1));
+
+        when(tournamentRepository.findOne(2)).thenReturn(null);
+        assertEquals(Optional.empty(), tournamentService.getTournamentById(2));
     }
 }
