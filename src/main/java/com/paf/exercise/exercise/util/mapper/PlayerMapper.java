@@ -1,4 +1,4 @@
-package com.paf.exercise.exercise.mapper;
+package com.paf.exercise.exercise.util.mapper;
 
 import com.paf.exercise.exercise.entity.Player;
 import org.mapstruct.Mapper;
