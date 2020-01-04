@@ -27,12 +27,4 @@ public class Tournament {
             inverseJoinColumns = {@JoinColumn(name = "player_id",
                     nullable = false, updatable = false)})
     private Set<Player> players;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Tournament)) return false;
-        Tournament tournament = (Tournament) o;
-        return Objects.equals(getId(), tournament.getId());
-    }
 }

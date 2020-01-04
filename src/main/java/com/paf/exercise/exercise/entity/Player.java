@@ -23,12 +23,4 @@ public class Player {
     private String name;
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "players")
     private Set<Tournament> tournaments;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Player)) return false;
-        Player player = (Player) o;
-        return Objects.equals(getId(), player.getId());
-    }
 }
