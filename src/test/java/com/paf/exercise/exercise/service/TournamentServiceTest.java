@@ -2,6 +2,7 @@ package com.paf.exercise.exercise.service;
 
 import com.paf.exercise.exercise.entity.Player;
 import com.paf.exercise.exercise.entity.Tournament;
+import com.paf.exercise.exercise.exception.exception.RecordNotFoundException;
 import com.paf.exercise.exercise.repository.PlayerRepository;
 import com.paf.exercise.exercise.repository.TournamentRepository;
 import org.junit.Test;
@@ -133,5 +134,51 @@ public class TournamentServiceTest {
         when(tournamentRepository.save(tournament1)).thenReturn(tournament1);
 
         assertEquals(Optional.of(tournament1), tournamentService.addPlayerIntoTournament(tournament1, 1));
+    }
+
+    @Test(expected = RecordNotFoundException.class)
+    public void deletePlayerFromTournamentShouldThrowExceptionWithTournamentNotFoundMessage() {
+        when(tournamentRepository.findOne(1)).thenReturn(null);
+
+        try {
+            tournamentService.deletePlayerFromTournament(1, 1);
+        } catch (RecordNotFoundException re) {
+            String message = "Tournament not found with id: " + 1;
+            assertEquals(message, re.getMessage());
+            throw re;
+        }
+        fail("RecordNotFoundException did not throw");
+    }
+
+    @Test(expected = RecordNotFoundException.class)
+    public void deletePlayerFromTournamentShouldThrowExceptionWithPlayerNotFoundMessage() {
+        when(tournamentRepository.findOne(1)).thenReturn(new Tournament(1,null,new HashSet<>()));
+
+        try {
+            tournamentService.deletePlayerFromTournament(1, 1);
+        } catch (RecordNotFoundException re) {
+            String message = "Player not found with id: " + 1 + " for tournament with id: " + 1;
+            assertEquals(message, re.getMessage());
+            throw re;
+        }
+        fail("RecordNotFoundException did not throw");
+    }
+
+    @Test
+    public void deletePlayerFromTournamentShouldReturnOK(){
+        Player player1 = new Player();
+        player1.setName("Mohammad");
+        player1.setId(1);
+
+        List<Player> players = Collections.singletonList(player1);
+
+        Tournament tournament1 = new Tournament();
+        tournament1.setRewardAmount(10);
+        tournament1.setId(1);
+        tournament1.setPlayers(new HashSet<>(players));
+
+        when(tournamentRepository.findOne(1)).thenReturn(tournament1);
+        when(tournamentRepository.save(tournament1)).thenReturn(new Tournament(1, 10,null));
+        tournamentService.deletePlayerFromTournament(1,1);
     }
 }
