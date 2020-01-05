@@ -1,5 +1,6 @@
 package com.paf.exercise.exercise.service;
 
+import com.paf.exercise.exercise.entity.Player;
 import com.paf.exercise.exercise.entity.Tournament;
 import com.paf.exercise.exercise.repository.PlayerRepository;
 import com.paf.exercise.exercise.repository.TournamentRepository;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * @author Mohammad Fathizadeh 2020-01-04
@@ -43,6 +45,10 @@ public class TournamentService {
         com.paf.exercise.exercise.entity.Tournament newTournament = new com.paf.exercise.exercise.entity.Tournament();
         newTournament.setRewardAmount(tournament.getRewardAmount());
         return tournamentRepository.save(newTournament);
+    }
+
+    public Optional<Set<Player>> getPlayersByTournamentId(Integer id) {
+        return Optional.ofNullable(tournamentRepository.findOne(id)).map(com.paf.exercise.exercise.entity.Tournament::getPlayers);
     }
 
 
