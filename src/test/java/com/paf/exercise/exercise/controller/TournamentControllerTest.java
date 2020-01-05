@@ -231,6 +231,55 @@ public class TournamentControllerTest {
 
     }
 
+    @Test
+    public void addPlayerIntoTournamentReturnOK() throws Exception {
+
+        Player player1 = new Player();
+        player1.setName("Mohammad");
+        player1.setId(1);
+
+
+        Tournament tournament1 = new Tournament();
+        tournament1.setRewardAmount(10);
+        tournament1.setId(1);
+        tournament1.setPlayers(new HashSet<>(Collections.singletonList(player1)));
+
+
+        when(tournamentService.getTournamentById(1)).thenReturn(Optional.of(tournament1));
+
+
+        when(tournamentService.addPlayerIntoTournament(tournament1, 1)).thenReturn(Optional.of(tournament1));
+        MvcResult requestResult = this.mockMvc.perform(post("/tournaments/1/players/1")).andExpect(status().isOk()).andReturn();
+
+
+        com.paf.exercise.exercise.dto.Tournament responseDto = parseResponse(requestResult, com.paf.exercise.exercise.dto.Tournament.class);
+        assertEquals(tournamentMapper.toTournamentDto(tournament1), responseDto);
+
+    }
+
+    @Test
+    public void addPlayerIntoTournamentReturnNotfound() throws Exception {
+
+        Player player1 = new Player();
+        player1.setName("Mohammad");
+        player1.setId(1);
+
+
+        Tournament tournament1 = new Tournament();
+        tournament1.setRewardAmount(10);
+        tournament1.setId(1);
+        tournament1.setPlayers(new HashSet<>(Collections.singletonList(player1)));
+
+
+        when(tournamentService.getTournamentById(1)).thenReturn(Optional.empty());
+        this.mockMvc.perform(post("/tournaments/1/players/1")).andExpect(status().isNotFound());
+
+        when(tournamentService.getTournamentById(1)).thenReturn(Optional.of(tournament1));
+        when(tournamentService.addPlayerIntoTournament(tournament1, 1)).thenReturn(Optional.empty());
+        this.mockMvc.perform(post("/tournaments/1/players/1")).andExpect(status().isNotFound());
+
+    }
+
     public static <T> T parseResponse(MvcResult result, Class<T> responseClass) {
         try {
             String contentAsString = result.getResponse().getContentAsString();
