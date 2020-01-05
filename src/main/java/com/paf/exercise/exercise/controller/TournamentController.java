@@ -106,4 +106,14 @@ public class TournamentController {
                 orElseThrow(() -> new RecordNotFoundException("Player not found with id: " + playerId));
     }
 
+    @ApiOperation(value = "Remove a particular player from a particular tournament")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully removed the player from the tournament"),
+            @ApiResponse(code = 404, message = "You have entered an invalid tournament or player id")
+    })
+    @DeleteMapping("/{id}/players/{playerId}")
+    public ResponseEntity<Void> removePlayerFromTournament(@PathVariable("id") Integer id, @PathVariable("playerId") Integer playerId) {
+        tournamentService.deletePlayerFromTournament(id, playerId);
+        return ResponseEntity.noContent().build();
+    }
 }
