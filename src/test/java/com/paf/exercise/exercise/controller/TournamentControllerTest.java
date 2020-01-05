@@ -181,6 +181,38 @@ public class TournamentControllerTest {
 
     }
 
+    @Test
+    public void getPlayersShouldReturnOK() throws Exception {
+
+        when(tournamentService.getPlayersByTournamentId(1)).thenReturn(Optional.of(new HashSet<>()));
+        MvcResult requestResult = this.mockMvc.perform(get("/tournaments/1/players"))
+                .andExpect(status().isOk()).andReturn();
+
+
+        List<com.paf.exercise.exercise.dto.Player> playerList = mapper.readValue(requestResult.getResponse().getContentAsString(), new TypeReference<List<com.paf.exercise.exercise.dto.Player>>() {
+        });
+        assertTrue(playerList.isEmpty());
+
+
+        when(tournamentService.getPlayersByTournamentId(1)).thenReturn(Optional.of(new HashSet<>(
+                Arrays.asList(new Player(1, "Mohammad", null), new Player(2, "Robert", null))
+        )));
+        requestResult = this.mockMvc.perform(get("/tournaments/1/players"))
+                .andExpect(status().isOk()).andReturn();
+
+        playerList = mapper.readValue(requestResult.getResponse().getContentAsString(), new TypeReference<List<com.paf.exercise.exercise.dto.Player>>() {
+        });
+        assertEquals(2, playerList.size());
+        assertTrue(playerList.contains(new com.paf.exercise.exercise.dto.Player(1, "Mohammad")));
+        assertTrue(playerList.contains(new com.paf.exercise.exercise.dto.Player(2, "Robert")));
+    }
+
+    @Test
+    public void getPlayersShouldReturnNotfound() throws Exception {
+        when(tournamentService.getPlayersByTournamentId(1)).thenReturn(Optional.empty());
+        this.mockMvc.perform(get("/tournaments/1/players")).andExpect(status().isNotFound());
+    }
+
 
     public static <T> T parseResponse(MvcResult result, Class<T> responseClass) {
         try {
