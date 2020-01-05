@@ -39,4 +39,11 @@ public class TournamentService {
         });
     }
 
+    public com.paf.exercise.exercise.entity.Tournament addTournament(com.paf.exercise.exercise.dto.Tournament tournament) {
+        com.paf.exercise.exercise.entity.Tournament newTournament = new com.paf.exercise.exercise.entity.Tournament();
+        newTournament.setRewardAmount(tournament.getRewardAmount());
+        return tournamentRepository.save(newTournament);
+    }
+
+
 }
