@@ -56,4 +56,10 @@ public class TournamentController {
         return tournamentService.updateTournament(id, tournament).map(tournamentResponse -> ResponseEntity.ok(tournamentMapper.toTournamentDto(tournamentResponse)))
                 .orElseThrow(() -> new RecordNotFoundException("Tournament not found with id: " + id));
     }
+
+    @ApiOperation(value = "Create a new tournament", response = Tournament.class)
+    @PostMapping("/")
+    public ResponseEntity<Tournament> addTournament(@RequestBody Tournament tournament) {
+        return ResponseEntity.ok(tournamentMapper.toTournamentDto(tournamentService.addTournament(tournament)));
+    }
 }
