@@ -8,20 +8,26 @@
 </head>
 
 <body ng-app="exercise">
+<br/>
+<div>
+    <h3>Click <a href="/swagger-ui.html">here</a> to see api documentation (swagger)</h3>
+</div>
+<br/>
+<br/>
 <div>
     <h3>Tournaments</h3>
     <div ng-repeat="tournament in tournaments">
         <div>Tournament</div>
-        <span>Id: {{tournament.tournament_id}}</span>
-        <span>Reward amount: {{tournament.reward_amount}}</span>
+        <span>Id: {{tournament.id}}</span>
+        <span>Reward amount: {{tournament.rewardAmount}}</span>
         <button ng-click="editTournament(tournament)">Edit</button>
-        <button ng-click="removeTournament(tournament.tournament_id)">Remove</button>
+        <button ng-click="removeTournament(tournament.id)">Remove</button>
         <div ng-if="tournament.players">
             <div>Players</div>
             <div ng-repeat="player in tournament.players">
-                <span>Id: {{player.player_id}}</span>
-                <span>Name: {{player.player_name}}</span>
-                <button ng-click="removePlayerFromTournament(tournament.tournament_id, player.player_id)">Remove</button>
+                <span>Id: {{player.id}}</span>
+                <span>Name: {{player.name}}</span>
+                <button ng-click="removePlayerFromTournament(tournament.id, player.id)">Remove</button>
             </div>
         </div>
     </div>
@@ -42,11 +48,18 @@
     </div>
 </div>
 <div>
+    <h5>Add Player</h5>
+    <div>
+        Player name: <input ng-model="playerName"/>
+        <button ng-click="addPlayer(playerName)">Add Player</button>
+    </div>
+</div>
+<div>
     <h5>Add player into tournament</h5>
     <div>
         Tournament id: <input ng-model="playerTournamentId"/>
-        Player: <input ng-model="playerName"/>
-        <button ng-click="addPlayerIntoTournament(playerTournamentId, playerName)">Add Player</button>
+        Player Id: <input ng-model="playerId"/>
+        <button ng-click="addPlayerIntoTournament(playerTournamentId, playerId)">Add Player</button>
     </div>
 </div>
 
