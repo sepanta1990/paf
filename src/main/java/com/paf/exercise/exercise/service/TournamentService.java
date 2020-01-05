@@ -2,12 +2,14 @@ package com.paf.exercise.exercise.service;
 
 import com.paf.exercise.exercise.entity.Player;
 import com.paf.exercise.exercise.entity.Tournament;
+import com.paf.exercise.exercise.exception.exception.RecordNotFoundException;
 import com.paf.exercise.exercise.repository.PlayerRepository;
 import com.paf.exercise.exercise.repository.TournamentRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -64,5 +66,19 @@ public class TournamentService {
             tournament.getPlayers().add(player);
             return tournamentRepository.save(tournament);
         });
+    }
+
+    public void deletePlayerFromTournament(Integer tournamentId, Integer playerId) {
+        com.paf.exercise.exercise.entity.Tournament tournament = tournamentRepository.findOne(tournamentId);
+        if (tournament == null)
+            throw new RecordNotFoundException("Tournament not found with id: " + tournamentId);
+
+        Set<Player> players = tournament.getPlayers();
+        players.stream().filter(player -> Objects.equals(player.getId(), playerId)).findFirst()
+                .map(player -> {
+                    tournament.getPlayers().remove(player);
+                    return tournamentRepository.save(tournament);
+                })
+                .orElseThrow(() -> new RecordNotFoundException("Player not found with id: " + playerId + " for tournament with id: " + tournamentId));
     }
 }
