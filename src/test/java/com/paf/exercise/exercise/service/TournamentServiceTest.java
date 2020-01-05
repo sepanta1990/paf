@@ -2,6 +2,7 @@ package com.paf.exercise.exercise.service;
 
 import com.paf.exercise.exercise.entity.Player;
 import com.paf.exercise.exercise.entity.Tournament;
+import com.paf.exercise.exercise.repository.PlayerRepository;
 import com.paf.exercise.exercise.repository.TournamentRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,6 +25,9 @@ public class TournamentServiceTest {
 
     @MockBean
     private TournamentRepository tournamentRepository;
+
+    @MockBean
+    private PlayerRepository playerRepository;
 
     @Autowired
     private TournamentService tournamentService;
@@ -106,5 +110,28 @@ public class TournamentServiceTest {
 
         when(tournamentRepository.exists(1)).thenReturn(true);
         assertTrue(tournamentService.deleteTournamentById(1));
+    }
+
+    @Test
+    public void addPlayerIntoTournamentTest() {
+
+        Player player1 = new Player();
+        player1.setName("Mohammad");
+        player1.setId(1);
+
+        List<Player> players = Collections.singletonList(player1);
+
+        Tournament tournament1 = new Tournament();
+        tournament1.setRewardAmount(10);
+        tournament1.setId(1);
+        tournament1.setPlayers(new HashSet<>(players));
+
+        when(playerRepository.findOne(1)).thenReturn(null);
+        assertFalse(tournamentService.addPlayerIntoTournament(tournament1, 1).isPresent());
+
+        when(playerRepository.findOne(1)).thenReturn(player1);
+        when(tournamentRepository.save(tournament1)).thenReturn(tournament1);
+
+        assertEquals(Optional.of(tournament1), tournamentService.addPlayerIntoTournament(tournament1, 1));
     }
 }
