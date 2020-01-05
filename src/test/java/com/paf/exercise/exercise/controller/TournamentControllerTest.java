@@ -213,6 +213,23 @@ public class TournamentControllerTest {
         this.mockMvc.perform(get("/tournaments/1/players")).andExpect(status().isNotFound());
     }
 
+    @Test
+    public void removeTournamentShouldReturnNotfound() throws Exception {
+        com.paf.exercise.exercise.dto.Tournament requestDto = new com.paf.exercise.exercise.dto.Tournament(null, 10, null);
+        when(tournamentService.deleteTournamentById(1)).thenReturn(false);
+        this.mockMvc.perform(delete("/tournaments/1").contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(requestDto))).andExpect(status().isNotFound());
+
+    }
+
+    @Test
+    public void removeTournamentShouldReturnOK() throws Exception {
+        com.paf.exercise.exercise.dto.Tournament requestDto = new com.paf.exercise.exercise.dto.Tournament(null, 10, null);
+        when(tournamentService.deleteTournamentById(1)).thenReturn(true);
+        this.mockMvc.perform(delete("/tournaments/1").contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(requestDto))).andExpect(status().isNoContent());
+
+    }
 
     public static <T> T parseResponse(MvcResult result, Class<T> responseClass) {
         try {
