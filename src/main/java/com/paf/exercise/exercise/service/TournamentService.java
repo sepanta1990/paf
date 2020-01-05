@@ -51,5 +51,11 @@ public class TournamentService {
         return Optional.ofNullable(tournamentRepository.findOne(id)).map(com.paf.exercise.exercise.entity.Tournament::getPlayers);
     }
 
-
+    public boolean deleteTournamentById(Integer id) {
+        if (!tournamentRepository.exists(id)) {
+            return false;
+        }
+        tournamentRepository.delete(id);
+        return true;
+    }
 }
