@@ -22,11 +22,9 @@ import org.springframework.test.web.servlet.MvcResult;
 import java.io.IOException;
 import java.util.*;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -166,6 +164,20 @@ public class TournamentControllerTest {
         when(tournamentService.updateTournament(1, requestDto)).thenReturn(Optional.empty());
         this.mockMvc.perform(put("/tournaments/1").contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(requestDto))).andExpect(status().isNotFound());
+
+    }
+
+    @Test
+    public void addTournamentTest() throws Exception {
+        com.paf.exercise.exercise.dto.Tournament requestDto = new com.paf.exercise.exercise.dto.Tournament(null, 10, null);
+        when(tournamentService.addTournament(requestDto)).thenReturn(new Tournament(2, 10, null));
+        MvcResult requestResult = this.mockMvc.perform(post("/tournaments/").contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(requestDto))).andExpect(status().isOk()).andReturn();
+
+        com.paf.exercise.exercise.dto.Tournament responseDto = parseResponse(requestResult, com.paf.exercise.exercise.dto.Tournament.class);
+        assertEquals(responseDto.getRewardAmount(), requestDto.getRewardAmount());
+        assertEquals(responseDto.getId(), new Integer(2));
+        assertNull(responseDto.getPlayers());
 
     }
 
