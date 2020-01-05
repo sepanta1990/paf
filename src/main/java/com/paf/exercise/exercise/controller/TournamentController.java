@@ -1,8 +1,10 @@
 package com.paf.exercise.exercise.controller;
 
+import com.paf.exercise.exercise.dto.Player;
 import com.paf.exercise.exercise.dto.Tournament;
 import com.paf.exercise.exercise.exception.exception.RecordNotFoundException;
 import com.paf.exercise.exercise.service.TournamentService;
+import com.paf.exercise.exercise.util.mapper.PlayerMapper;
 import com.paf.exercise.exercise.util.mapper.TournamentMapper;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -12,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,6 +26,7 @@ public class TournamentController {
 
     private final TournamentService tournamentService;
     private final TournamentMapper tournamentMapper = Mappers.getMapper(TournamentMapper.class);
+    private final PlayerMapper playerMapper = Mappers.getMapper(PlayerMapper.class);
 
     public TournamentController(TournamentService tournamentService) {
         this.tournamentService = tournamentService;
@@ -61,5 +65,16 @@ public class TournamentController {
     @PostMapping("/")
     public ResponseEntity<Tournament> addTournament(@RequestBody Tournament tournament) {
         return ResponseEntity.ok(tournamentMapper.toTournamentDto(tournamentService.addTournament(tournament)));
+    }
+
+    @ApiOperation(value = "Get players list of a particular tournament")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully retrieved the players list of the tournament"),
+            @ApiResponse(code = 404, message = "You have entered an invalid tournament id")
+    })
+    @GetMapping("/{id}/players")
+    public ResponseEntity<List<Player>> getPlayers(@PathVariable("id") Integer id) {
+        return tournamentService.getPlayersByTournamentId(id).map(players -> ResponseEntity.ok(playerMapper.toPlayerDto(new ArrayList<>(players))))
+                .orElseThrow(() -> new RecordNotFoundException("Tournament not found with id: " + id));
     }
 }
