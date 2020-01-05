@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.paf.exercise.exercise.entity.Player;
 import com.paf.exercise.exercise.entity.Tournament;
+import com.paf.exercise.exercise.exception.exception.RecordNotFoundException;
 import com.paf.exercise.exercise.service.TournamentService;
 import com.paf.exercise.exercise.util.mapper.TournamentMapper;
 import org.junit.BeforeClass;
@@ -277,6 +278,46 @@ public class TournamentControllerTest {
         when(tournamentService.getTournamentById(1)).thenReturn(Optional.of(tournament1));
         when(tournamentService.addPlayerIntoTournament(tournament1, 1)).thenReturn(Optional.empty());
         this.mockMvc.perform(post("/tournaments/1/players/1")).andExpect(status().isNotFound());
+
+    }
+
+    @Test
+    public void removePlayerFromTournamentReturnNotfound() throws Exception {
+
+        Player player1 = new Player();
+        player1.setName("Mohammad");
+        player1.setId(1);
+
+
+        Tournament tournament1 = new Tournament();
+        tournament1.setRewardAmount(10);
+        tournament1.setId(1);
+        tournament1.setPlayers(new HashSet<>(Collections.singletonList(player1)));
+
+
+        doThrow(new RecordNotFoundException("Record not found")).when(tournamentService).deletePlayerFromTournament(1, 1);
+        this.mockMvc.perform(delete("/tournaments/1/players/1")).andExpect(status().isNotFound());
+        verify(tournamentService, times(1)).deletePlayerFromTournament(1, 1);
+
+    }
+
+    @Test
+    public void removePlayerFromTournamentReturnOK() throws Exception {
+
+        Player player1 = new Player();
+        player1.setName("Mohammad");
+        player1.setId(1);
+
+
+        Tournament tournament1 = new Tournament();
+        tournament1.setRewardAmount(10);
+        tournament1.setId(1);
+        tournament1.setPlayers(new HashSet<>(Collections.singletonList(player1)));
+
+
+        doNothing().when(tournamentService).deletePlayerFromTournament(1, 1);
+        this.mockMvc.perform(delete("/tournaments/1/players/1")).andExpect(status().isNoContent());
+        verify(tournamentService, times(1)).deletePlayerFromTournament(1, 1);
 
     }
 
