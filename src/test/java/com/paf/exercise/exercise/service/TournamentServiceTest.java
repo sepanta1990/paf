@@ -98,4 +98,13 @@ public class TournamentServiceTest {
         assertArrayEquals(players.toArray(), tournamentService.getPlayersByTournamentId(1).get().toArray());
 
     }
+
+    @Test
+    public void deleteTournamentByIdTest() {
+        when(tournamentRepository.exists(1)).thenReturn(false);
+        assertFalse(tournamentService.deleteTournamentById(1));
+
+        when(tournamentRepository.exists(1)).thenReturn(true);
+        assertTrue(tournamentService.deleteTournamentById(1));
+    }
 }
