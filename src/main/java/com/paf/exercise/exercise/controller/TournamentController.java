@@ -77,4 +77,16 @@ public class TournamentController {
         return tournamentService.getPlayersByTournamentId(id).map(players -> ResponseEntity.ok(playerMapper.toPlayerDto(new ArrayList<>(players))))
                 .orElseThrow(() -> new RecordNotFoundException("Tournament not found with id: " + id));
     }
+
+    @ApiOperation(value = "Delete a particular tournament")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully deleted the tournament"),
+            @ApiResponse(code = 404, message = "You have entered an invalid tournament id")
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> removeTournament(@PathVariable("id") Integer id) {
+        if (!tournamentService.deleteTournamentById(id))
+            throw new RecordNotFoundException("Tournament not found with id: " + id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }
