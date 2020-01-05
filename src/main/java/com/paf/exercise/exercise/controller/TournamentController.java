@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Mohammad Fathizadeh 2020-01-04
@@ -89,4 +90,20 @@ public class TournamentController {
             throw new RecordNotFoundException("Tournament not found with id: " + id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
+    @ApiOperation(value = "Adds a particular player to a particular tournament")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully added player to the tournament"),
+            @ApiResponse(code = 404, message = "You have entered an invalid tournament or player id")
+    })
+    @PostMapping("/{id}/players/{playerId}")
+    public ResponseEntity<Tournament> addPlayerIntoTournament(@PathVariable("id") Integer id, @PathVariable("playerId") Integer playerId) {
+        Optional<com.paf.exercise.exercise.entity.Tournament> tournament = tournamentService.getTournamentById(id);
+        if (!tournament.isPresent())
+            throw new RecordNotFoundException("Tournament not found with id: " + id);
+        return tournamentService.addPlayerIntoTournament(tournament.get(), playerId).
+                map(responseTournament -> ResponseEntity.ok(tournamentMapper.toTournamentDto(responseTournament))).
+                orElseThrow(() -> new RecordNotFoundException("Player not found with id: " + playerId));
+    }
+
 }
