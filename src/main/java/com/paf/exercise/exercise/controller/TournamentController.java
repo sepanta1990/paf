@@ -10,10 +10,7 @@ import io.swagger.annotations.ApiResponses;
 import org.mapstruct.factory.Mappers;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -46,6 +43,17 @@ public class TournamentController {
     @GetMapping("/{id}")
     public ResponseEntity<Tournament> getTournament(@PathVariable("id") Integer id) {
         return tournamentService.getTournamentById(id).map(tournament -> ResponseEntity.ok(tournamentMapper.toTournamentDto(tournament)))
+                .orElseThrow(() -> new RecordNotFoundException("Tournament not found with id: " + id));
+    }
+
+    @ApiOperation(value = "Update a particular tournament by id", response = Tournament.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully updated the tournament object"),
+            @ApiResponse(code = 404, message = "You have entered an invalid tournament id")
+    })
+    @PutMapping("/{id}")
+    public ResponseEntity<Tournament> updateTournament(@PathVariable("id") Integer id, @RequestBody Tournament tournament) {
+        return tournamentService.updateTournament(id, tournament).map(tournamentResponse -> ResponseEntity.ok(tournamentMapper.toTournamentDto(tournamentResponse)))
                 .orElseThrow(() -> new RecordNotFoundException("Tournament not found with id: " + id));
     }
 }
