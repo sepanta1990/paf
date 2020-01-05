@@ -2,6 +2,7 @@ package com.paf.exercise.exercise.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -15,6 +16,7 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(exclude = "players")
 public class Tournament {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
