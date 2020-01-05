@@ -1,6 +1,5 @@
 package com.paf.exercise.exercise.service;
 
-import com.paf.exercise.exercise.entity.Player;
 import com.paf.exercise.exercise.entity.Tournament;
 import com.paf.exercise.exercise.repository.PlayerRepository;
 import com.paf.exercise.exercise.repository.TournamentRepository;
@@ -31,6 +30,13 @@ public class TournamentService {
 
     public Optional<Tournament> getTournamentById(Integer id) {
         return Optional.ofNullable(tournamentRepository.findOne(id));
+    }
+
+    public Optional<Tournament> updateTournament(Integer id, com.paf.exercise.exercise.dto.Tournament tournament) {
+        return Optional.ofNullable(tournamentRepository.findOne(id)).map(tournamentEnt -> {
+            tournamentEnt.setRewardAmount(tournament.getRewardAmount());
+            return tournamentRepository.save(tournamentEnt);
+        });
     }
 
 }
