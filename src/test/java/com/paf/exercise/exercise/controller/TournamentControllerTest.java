@@ -18,10 +18,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.io.IOException;
 import java.util.*;
 
 import static org.junit.Assert.assertArrayEquals;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -92,4 +94,50 @@ public class TournamentControllerTest {
 
     }
 
+    @Test
+    public void getTournamentShouldReturnOK() throws Exception {
+        Player player1 = new Player();
+        player1.setName("Mohammad");
+        player1.setId(1);
+
+        Player player2 = new Player();
+        player2.setName("Robert");
+        player2.setId(2);
+
+        Tournament tournament1 = new Tournament();
+        tournament1.setRewardAmount(10);
+        tournament1.setId(1);
+        tournament1.setPlayers(new HashSet<>(Arrays.asList(player1, player2)));
+
+        when(tournamentService.getTournamentById(1)).thenReturn(Optional.of(tournament1));
+        MvcResult requestResult = this.mockMvc.perform(get("/tournaments/1")).andExpect(status().isOk())
+                .andExpect(status().isOk()).andReturn();
+        assertEquals(parseResponse(requestResult, com.paf.exercise.exercise.dto.Tournament.class),
+                tournamentMapper.toTournamentDto(tournament1));
+        verify(tournamentService, times(1)).getTournamentById(1);
+
+        tournament1.setPlayers(null);
+        when(tournamentService.getTournamentById(2)).thenReturn(Optional.of(tournament1));
+        requestResult = this.mockMvc.perform(get("/tournaments/2")).andExpect(status().isOk())
+                .andExpect(status().isOk()).andReturn();
+        assertEquals(parseResponse(requestResult, com.paf.exercise.exercise.dto.Tournament.class),
+                tournamentMapper.toTournamentDto(tournament1));
+        verify(tournamentService, times(1)).getTournamentById(2);
+    }
+
+    @Test
+    public void getTournamentShouldReturnNotfound() throws Exception {
+        when(tournamentService.getTournamentById(1)).thenReturn(Optional.empty());
+        this.mockMvc.perform(get("/tournaments/1")).andExpect(status().isNotFound());
+        verify(tournamentService, times(1)).getTournamentById(1);
+    }
+
+    public static <T> T parseResponse(MvcResult result, Class<T> responseClass) {
+        try {
+            String contentAsString = result.getResponse().getContentAsString();
+            return mapper.readValue(contentAsString, responseClass);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
