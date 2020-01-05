@@ -1,5 +1,6 @@
 package com.paf.exercise.exercise.service;
 
+import com.paf.exercise.exercise.entity.Player;
 import com.paf.exercise.exercise.entity.Tournament;
 import com.paf.exercise.exercise.repository.TournamentRepository;
 import org.junit.Test;
@@ -9,9 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
@@ -71,6 +70,32 @@ public class TournamentServiceTest {
 
         when(tournamentRepository.save(tournamentToBeSaved)).thenReturn(tournamentSaved);
 
-        assertEquals(tournamentSaved, tournamentService.addTournament(new com.paf.exercise.exercise.dto.Tournament(null,10,null)));
+        assertEquals(tournamentSaved, tournamentService.addTournament(new com.paf.exercise.exercise.dto.Tournament(null, 10, null)));
+    }
+
+    @Test
+    public void getPlayersByTournamentIdTest() {
+
+        when(tournamentRepository.findOne(1)).thenReturn(null);
+        assertEquals(Optional.empty(), tournamentService.getPlayersByTournamentId(1));
+
+        when(tournamentRepository.findOne(1)).thenReturn(new Tournament());
+        assertFalse(tournamentService.getPlayersByTournamentId(1).isPresent());
+
+        Player player1 = new Player();
+        player1.setName("Mohammad");
+        player1.setId(1);
+
+        List<Player> players = Collections.singletonList(player1);
+
+        Tournament tournament1 = new Tournament();
+        tournament1.setRewardAmount(10);
+        tournament1.setId(1);
+        tournament1.setPlayers(new HashSet<>(players));
+
+        when(tournamentRepository.findOne(1)).thenReturn(tournament1);
+
+        assertArrayEquals(players.toArray(), tournamentService.getPlayersByTournamentId(1).get().toArray());
+
     }
 }
