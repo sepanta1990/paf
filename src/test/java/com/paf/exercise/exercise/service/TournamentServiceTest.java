@@ -50,4 +50,16 @@ public class TournamentServiceTest {
         when(tournamentRepository.findOne(2)).thenReturn(null);
         assertEquals(Optional.empty(), tournamentService.getTournamentById(2));
     }
+
+    @Test
+    public void updateTournamentTest() {
+        Tournament tournamentToBeUpdated = new Tournament(1, 5, null);
+        Tournament tournamentUpdated = new Tournament(1, 10, null);
+
+
+        when(tournamentRepository.save(tournamentToBeUpdated)).thenReturn(tournamentUpdated);
+        when(tournamentRepository.findOne(1)).thenReturn(tournamentToBeUpdated);
+
+        assertEquals(Optional.of(tournamentUpdated), tournamentService.updateTournament(1, new com.paf.exercise.exercise.dto.Tournament(1, 10, null)));
+    }
 }
