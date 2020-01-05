@@ -58,4 +58,11 @@ public class TournamentService {
         tournamentRepository.delete(id);
         return true;
     }
+
+    public Optional<com.paf.exercise.exercise.entity.Tournament> addPlayerIntoTournament(com.paf.exercise.exercise.entity.Tournament tournament, Integer playerId) {
+        return Optional.ofNullable(playerRepository.findOne(playerId)).map(player -> {
+            tournament.getPlayers().add(player);
+            return tournamentRepository.save(tournament);
+        });
+    }
 }
