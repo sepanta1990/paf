@@ -62,4 +62,15 @@ public class TournamentServiceTest {
 
         assertEquals(Optional.of(tournamentUpdated), tournamentService.updateTournament(1, new com.paf.exercise.exercise.dto.Tournament(1, 10, null)));
     }
+
+    @Test
+    public void addTournamentTest() {
+        Tournament tournamentToBeSaved = new Tournament(null, 10, null);
+        Tournament tournamentSaved = new Tournament(1, 10, null);
+
+
+        when(tournamentRepository.save(tournamentToBeSaved)).thenReturn(tournamentSaved);
+
+        assertEquals(tournamentSaved, tournamentService.addTournament(new com.paf.exercise.exercise.dto.Tournament(null,10,null)));
+    }
 }
